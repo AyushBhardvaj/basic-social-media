@@ -14,6 +14,7 @@ import userRouter from "./routes/users.js";
 import postRouter from "./routes/posts.js";
 import { createPost } from "./controllers/posts.js";
 import verifyToken from "./middleware/auth.js";
+import { v2 as cloudinary } from "cloudinary";
 
 /* Configuration */
 const __filename = fileURLToPath(import.meta.url);
@@ -26,7 +27,12 @@ app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 
 /* File Storage */
@@ -48,6 +54,13 @@ app.post("/posts", verifyToken, upload.single("picture"), createPost);
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
 app.use("/posts", postRouter);
+
+// CLOUDINARY CONFIG
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
+});
 
 /* MONGOOSE CONNECT */
 const PORT = process.env.PORT || 6001;
