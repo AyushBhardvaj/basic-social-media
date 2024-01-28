@@ -9,6 +9,7 @@ import {
   FormControl,
   useTheme,
   useMediaQuery,
+  Tooltip,
 } from "@mui/material";
 import {
   Search,
@@ -31,6 +32,7 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user.user);
+  const mode = useSelector((state) => state.user.mode);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -108,19 +110,32 @@ const Header = () => {
       {/* DESKTOP NAV */}
       {isNonMobileScreens ? (
         <FlexBetween gap="2rem">
-          <IconButton onClick={() => dispatch(setMode())}>
-            {theme.palette.mode === "dark" ? (
-              <DarkMode sx={{ fontSize: "25px" }} />
-            ) : (
-              <LightMode sx={{ color: dark, fontSize: "25px" }} />
-            )}
-          </IconButton>
-          <Message sx={{ fontSize: "25px" }} />
-          <Notifications sx={{ fontSize: "25px" }} />
-          <Help sx={{ fontSize: "25px" }} />
+          <Tooltip title={mode === "dark" ? "light" : "dark"}>
+            <IconButton onClick={() => dispatch(setMode())}>
+              {theme.palette.mode === "dark" ? (
+                <DarkMode sx={{ fontSize: "25px" }} />
+              ) : (
+                <LightMode sx={{ color: dark, fontSize: "25px" }} />
+              )}
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="inbox">
+            <IconButton>
+              <Message sx={{ fontSize: "25px" }} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="notifications">
+            <IconButton>
+              <Notifications sx={{ fontSize: "25px" }} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="help">
+            <IconButton>
+              <Help sx={{ fontSize: "25px" }} />
+            </IconButton>
+          </Tooltip>
           <FormControl variant="standard" value={fullName}>
             <Select
-              //   value="Ayush"
               value={fullName}
               sx={{
                 backgroundColor: neutralLight,
@@ -143,7 +158,6 @@ const Header = () => {
               <MenuItem
                 onClick={() => {
                   dispatch(setLogout());
-                  //   navigate("/login");
                 }}
               >
                 Log Out

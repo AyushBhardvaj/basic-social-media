@@ -22,10 +22,14 @@ const createPost = async (req, res) => {
       };
     }
     await newPost.save();
-    const post = await Post.find().populate(
-      "postAuthor",
-      "_id firstName lastName profilePic location"
-    );
+    const post = await Post.find({
+      $or: [
+        {
+          postAuthor: { $in: req.user.friends },
+        },
+        { postAuthor: req.user._id },
+      ],
+    }).populate("postAuthor", "_id firstName lastName profilePic location");
     res.status(200).json(post);
   } catch (error) {
     res.status(409).json({ message: error.message });
