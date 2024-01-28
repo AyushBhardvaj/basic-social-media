@@ -143,7 +143,7 @@ const Form = () => {
             gap="30px"
             gridTemplateColumns="repeat(4, minxmax(0, 1fr))"
             sx={{
-              "& > div": { gridColumn: isNonMobile ? undefined : "span 4" }, //"&>div" - It means any div inside this element.
+              "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
             }}
           >
             {isRegister && (

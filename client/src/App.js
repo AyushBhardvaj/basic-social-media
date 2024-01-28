@@ -1,6 +1,5 @@
 import {
   BrowserRouter as Router,
-  Navigate,
   Routes,
   Route,
 } from "react-router-dom";

@@ -159,7 +159,7 @@ const UserWidget = ({ userId, picturePath }) => {
             <img
               height="30px"
               weight="30px"
-              src="http://localhost:3001/assets/twitter.png"
+              src={`${process.env.REACT_APP_API_URL}/assets/twitter.png`}
               alt="twitter"
             />
             <Box>
@@ -177,7 +177,7 @@ const UserWidget = ({ userId, picturePath }) => {
             <img
               height="30px"
               weight="30px"
-              src="http://localhost:3001/assets/linkedin.png"
+              src={`${process.env.REACT_APP_API_URL}/assets/linkedin.png`}
               alt="linkedin"
             />
             <Box>

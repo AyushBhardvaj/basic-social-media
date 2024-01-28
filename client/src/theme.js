@@ -1,4 +1,3 @@
-import { typography } from "@mui/system";
 
 export const colorTokens = {
   grey: {

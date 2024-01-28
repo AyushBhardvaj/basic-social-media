@@ -22,7 +22,7 @@ const Friend = ({ friendId, name, subtitle, userProfilepic }) => {
   const patchFriend = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3001/friends/${friendId}`,
+        `${process.env.REACT_APP_API_URL}/friends/${friendId}`,
         {
           method: "PATCH",
           headers: {
