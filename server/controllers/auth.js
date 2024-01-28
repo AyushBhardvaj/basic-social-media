@@ -1,4 +1,3 @@
-
 import User from "../models/User.js";
 import { v2 as cloudinary } from "cloudinary";
 import sendToken from "../utils/sendToken.js";
@@ -6,6 +5,8 @@ import sendToken from "../utils/sendToken.js";
 /* REGISTER USER */
 const register = async (req, res) => {
   try {
+    console.log("request accepted in login", req.body);
+
     const {
       firstName,
       lastName,
@@ -49,6 +50,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log("request accepted in login", req.body);
     const user = await User.findOne({ email }).select("+password");
     if (!user) {
       return res.status(401).json({ msg: "User does not exist" });

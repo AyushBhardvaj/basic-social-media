@@ -58,6 +58,8 @@ const Form = () => {
 
   const login = async (values, onSubmitProps) => {
     try {
+      console.log(values);
+      console.log(`${process.env.REACT_APP_API_URL}/auth/login`);
       const savedUserResponse = await fetch(
         `${process.env.REACT_APP_API_URL}/auth/login`,
         {
