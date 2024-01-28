@@ -2,8 +2,11 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
-import authReducer from "./state";
+import authReducer from "./state/authSlice";
+import searchReducer from "./state/searchSlice";
+import friendReducer from "./state/friendSlice";
 import { configureStore } from "@reduxjs/toolkit";
+import postReducer from "./state/postSlice";
 import { Provider } from "react-redux";
 import {
   persistStore,
@@ -21,7 +24,12 @@ import { PersistGate } from "redux-persist/integration/react";
 const persistConfig = { key: "root", storage, version: 1 };
 const persistedReducer = persistReducer(persistConfig, authReducer);
 const store = configureStore({
-  reducer: persistedReducer,
+  reducer: {
+    user: persistedReducer,
+    posts: postReducer,
+    search: searchReducer,
+    friend: friendReducer,
+  },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {

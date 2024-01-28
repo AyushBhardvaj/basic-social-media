@@ -27,7 +27,7 @@ const register = async (req, res) => {
       firstName,
       lastName,
       email,
-      password: passwordHash,
+      password,
       profilePic: {
         public_id: myCloud.public_id,
         url: myCloud.secure_url,
@@ -49,7 +49,6 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
     const user = await User.findOne({ email }).select("+password");
     if (!user) {
       return res.status(401).json({ msg: "User does not exist" });

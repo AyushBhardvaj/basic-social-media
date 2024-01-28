@@ -21,16 +21,18 @@ import {
   Close,
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { setMode, setLogout } from "state";
+import { setMode, setLogout } from "state/authSlice";
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
+import { setSearchResults } from "state/searchSlice";
 
-const Navbar = () => {
+const Header = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user.user);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const theme = useTheme();
   const neutralLight = theme.palette.neutral.light;
@@ -39,7 +41,31 @@ const Navbar = () => {
   const primaryLight = theme.palette.primary.light;
   const alt = theme.palette.background.alt;
 
-  const fullName = `${user.firstName} ${user.lastName}`;
+  const fullName = `${user?.firstName} ${user?.lastName}`;
+
+  const params = new URLSearchParams({
+    search_query: searchQuery,
+  });
+
+  const searchUsers = async () => {
+    const searchResponse = await fetch(
+      `${process.env.REACT_APP_API_URL}/user/search?${params}`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+    const response = await searchResponse.json();
+    if (response) {
+      dispatch(setSearchResults(response));
+    }
+    navigate("/search");
+  };
+
+  const handleSearchQuery = (e) => {
+    e.preventDefault();
+    searchUsers();
+  };
 
   return (
     <FlexBetween padding="1rem 6%" backgroundColor={alt}>
@@ -48,7 +74,7 @@ const Navbar = () => {
           fontWeight="bold"
           fontSize="clamp(1rem, 2rem, 2.25rem)"
           color="primary"
-          onClick={() => navigate("/home")}
+          onClick={() => navigate("/")}
           sx={{
             "&:hover": {
               color: primaryLight,
@@ -59,17 +85,23 @@ const Navbar = () => {
           Fan_Field
         </Typography>
         {isNonMobileScreens && (
-          <FlexBetween
-            backgroundColor={neutralLight}
-            borderRadius="9px"
-            gap="3rem"
-            padding="0.1rem 1.5rem"
-          >
-            <InputBase placeholder="Search..." />
-            <IconButton>
-              <Search />
-            </IconButton>
-          </FlexBetween>
+          <form onSubmit={handleSearchQuery}>
+            <FlexBetween
+              backgroundColor={neutralLight}
+              borderRadius="9px"
+              gap="3rem"
+              padding="0.1rem 1.5rem"
+            >
+              <InputBase
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <IconButton type="submit">
+                <Search />
+              </IconButton>
+            </FlexBetween>
+          </form>
         )}
       </FlexBetween>
 
@@ -88,6 +120,7 @@ const Navbar = () => {
           <Help sx={{ fontSize: "25px" }} />
           <FormControl variant="standard" value={fullName}>
             <Select
+              //   value="Ayush"
               value={fullName}
               sx={{
                 backgroundColor: neutralLight,
@@ -107,7 +140,14 @@ const Navbar = () => {
               <MenuItem value={fullName}>
                 <Typography>{fullName}</Typography>
               </MenuItem>
-              <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  dispatch(setLogout());
+                  //   navigate("/login");
+                }}
+              >
+                Log Out
+              </MenuItem>
             </Select>
           </FormControl>
         </FlexBetween>
@@ -182,7 +222,11 @@ const Navbar = () => {
                 <MenuItem value={fullName}>
                   <Typography>{fullName}</Typography>
                 </MenuItem>
-                <MenuItem onClick={() => dispatch(setLogout())}>
+                <MenuItem
+                  onClick={() => {
+                    dispatch(setLogout());
+                  }}
+                >
                   Log Out
                 </MenuItem>
               </Select>
@@ -194,4 +238,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default Header;

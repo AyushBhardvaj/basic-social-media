@@ -2,7 +2,7 @@ import {
   BrowserRouter as Router,
   Navigate,
   Routes,
-  Route
+  Route,
 } from "react-router-dom";
 import HomePage from "./scenes/homePage";
 import LoginPage from "./scenes/loginPage";
@@ -12,11 +12,13 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { themeSettings } from "./theme";
 import { useMemo } from "react";
+import SearchResults from "scenes/searchResults";
+import Layout from "components/Layout/Layout";
+import { ProtectedRoute } from "utils/protectedRoute";
 
 function App() {
-  const mode = useSelector((state) => state.mode);
-  const theme = useMemo(() => createTheme(themeSettings(mode)), [mode])
-  const isAuth = Boolean(useSelector((state) => state.token))
+  const mode = useSelector((state) => state.user.mode);
+  const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
 
   return (
     <div className="app">
@@ -24,9 +26,33 @@ function App() {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Routes>
-            <Route path="/" element={<LoginPage />} />
-            <Route path="/home" element={isAuth?<HomePage />:<Navigate to="/" /> } />
-            <Route path="/profile/:userId" element={isAuth?<ProfilePage />:<Navigate to="/" /> } />
+            <Route path="/login" element={<LoginPage />} />
+            <Route element={<Layout />}>
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute redirect="/login">
+                    <HomePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile/:userId"
+                element={
+                  <ProtectedRoute redirect="/login">
+                    <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/search"
+                element={
+                  <ProtectedRoute redirect="/login">
+                    <SearchResults />
+                  </ProtectedRoute>
+                }
+              />
+            </Route>
           </Routes>
         </ThemeProvider>
       </Router>

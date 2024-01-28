@@ -1,19 +1,17 @@
-import { Box, useMediaQuery } from '@mui/material'
-import React from 'react';
-import Navbar from 'scenes/navbar/index.jsx'
-import UserWidget from "scenes/widgets/UserWidget"
-import MyPostWidget from "scenes/widgets/MyPostWidget"
-import { useSelector } from 'react-redux';
-import PostsWidget from 'scenes/widgets/PostsWidget';
-import AdvertWidget from 'scenes/widgets/AdvertWidget';
-import FriendListWidget from 'scenes/widgets/FriendListWidget';
+import { Box, useMediaQuery } from "@mui/material";
+import React from "react";
+import UserWidget from "scenes/widgets/UserWidget";
+import MyPostWidget from "scenes/widgets/MyPostWidget";
+import { useSelector } from "react-redux";
+import PostsWidget from "scenes/widgets/PostsWidget";
+import AdvertWidget from "scenes/widgets/AdvertWidget";
+import FriendListWidget from "scenes/widgets/FriendListWidget";
 
 const HomePage = () => {
-  const { _id, picturePath } = useSelector((state) => state.user)
+  const { _id, profilePic } = useSelector((state) => state.user.user);
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
   return (
     <Box>
-      <Navbar />
       <Box
         width="100%"
         padding="2rem 6%"
@@ -21,16 +19,21 @@ const HomePage = () => {
         gap="0.5rem"
         justifyContent="space-between"
       >
+        {/* Left part. User details part */}
         <Box flexBasis={isNonMobileScreens ? "26%" : undefined}>
-          <UserWidget userId={_id} picturePath={picturePath} />
+          <UserWidget userId={_id} picturePath={profilePic.url} />
         </Box>
 
-        <Box flexBasis={isNonMobileScreens ? "42%" : undefined}
-          mt={isNonMobileScreens ? undefined : "2rem"}>
-          <MyPostWidget picturePath={picturePath} />
-          <PostsWidget userId={_id}  />
+        {/* Middle Part. post part */}
+        <Box
+          flexBasis={isNonMobileScreens ? "42%" : undefined}
+          mt={isNonMobileScreens ? undefined : "2rem"}
+        >
+          <MyPostWidget picturePath={profilePic.url} />
+          <PostsWidget userId={_id} />
         </Box>
 
+        {/* right Part. Advertisements and friends list */}
         {isNonMobileScreens && (
           <Box flexBasis="26%">
             <AdvertWidget />
@@ -40,8 +43,7 @@ const HomePage = () => {
         )}
       </Box>
     </Box>
+  );
+};
 
-  )
-}
-
-export default HomePage
+export default HomePage;

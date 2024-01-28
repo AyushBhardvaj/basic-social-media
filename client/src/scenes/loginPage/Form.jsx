@@ -12,7 +12,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setLogin } from "state";
+import { setLogin } from "state/authSlice";
 import Dropzone from "react-dropzone";
 import FlexBetween from "components/FlexBetween";
 import { ImagetoBase64 } from "utils/imagetoBase64";
@@ -57,49 +57,60 @@ const Form = () => {
   const isRegister = pageType === "register";
 
   const login = async (values, onSubmitProps) => {
-    const savedUserResponse = await fetch("http://localhost:3001/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    });
-    const loggedIn = await savedUserResponse.json();
-    onSubmitProps.resetForm();
-
-    if (loggedIn) {
-      dispatch(
-        setLogin({
-          user: loggedIn.user,
-          token: loggedIn.token,
-        })
+    try {
+      const savedUserResponse = await fetch(
+        "http://localhost:3001/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(values),
+        }
       );
-      navigate("/home");
+      const loggedIn = await savedUserResponse.json();
+      onSubmitProps.resetForm();
+
+      if (loggedIn) {
+        dispatch(
+          setLogin({
+            user: loggedIn.user,
+            token: loggedIn.token,
+          })
+        );
+        navigate("/");
+      }
+    } catch (error) {
+      alert(error);
     }
   };
 
   const Register = async (values, onSubmitProps) => {
     //this allows us to send form info with image
-    const formData = new FormData();
-    for (let value in values) {
-      formData.append(value, values[value]);
-    }
-    const imgUrl = await ImagetoBase64(values.picture);
-
-    formData.append("pictureUrl", imgUrl);
-    const savedUserResponse = await fetch(
-      "http://localhost:3001/auth/register",
-      {
-        method: "POST",
-        body: formData,
+    try {
+      const formData = new FormData();
+      for (let value in values) {
+        formData.append(value, values[value]);
       }
-    );
-    const savedUser = await savedUserResponse.json();
-    onSubmitProps.resetForm();
-    console.log(savedUser);
+      const imgUrl = await ImagetoBase64(values.picture);
+      formData.append("pictureUrl", imgUrl);
+      const savedUserResponse = await fetch(
+        `${process.env.REACT_APP_API_URL}/auth/register`,
+        {
+          method: "POST",
+          credentials: "include",
+          body: formData,
+        }
+      );
+      const savedUser = await savedUserResponse.json();
+      onSubmitProps.resetForm();
 
-    if (savedUser) {
-      setPageType("login");
+      if (savedUser) {
+        setPageType("login");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -247,9 +258,10 @@ const Form = () => {
                 p: "1rem",
                 backgroundColor: palette.primary.main,
                 color: palette.background.alt,
-                "&:hover": { 
-                    // color: palette.primary.main, 
-                backgroundColor: palette.primary.hover},
+                "&:hover": {
+                  // color: palette.primary.main,
+                  backgroundColor: palette.primary.hover,
+                },
               }}
             >
               {isLogin ? "LOGIN" : "REGISTER"}

@@ -1,76 +1,73 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { setPosts } from 'state';
-import PostWidget from './PostWidget';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setPosts } from "state/postSlice";
+import PostWidget from "./PostWidget";
 
 const PostsWidget = ({ userId, isProfile = false }) => {
-    const dispatch = useDispatch();
-    const posts = useSelector((state) => state.posts);
-    const token = useSelector((state) => state.token);
+  const posts = useSelector((state) => state.posts.posts);
+  const token = useSelector((state) => state.user.token);
+  const dispatch = useDispatch();
 
-    const getPosts = async () => {
-        const response = await fetch("http://localhost:3001/posts", {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
-        }
-        );
-        const posts = await response.json()
-        dispatch(setPosts({ posts }));
+  const getPosts = async () => {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/posts`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+    });
+    const postsArray = await response.json();
+    if (postsArray) {
+      dispatch(setPosts({ posts: postsArray }));
+    }
+  };
+
+  const getUserPosts = async () => {
+    const response = await fetch(
+      `${process.env.REACT_APP_API_URL}/posts/${userId}/posts`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+    const postsArray = await response.json();
+    if (postsArray) {
+      dispatch(setPosts({ posts: postsArray }));
+    }
+  };
+
+  useEffect(() => {
+    if (isProfile) {
+      getUserPosts();
+    } else {
+      getPosts();
     }
 
-    const getUserPosts = async () => {
-        const response = await fetch(`http://localhost:3001/posts/${userId}/posts`, {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
+    // eslint-disable-next-line
+  }, []);
+
+  return (
+    <>
+      {posts?.map(
+        ({ _id, postAuthor, description, postImage, likes, comments }) => {
+          return (
+            <PostWidget
+              key={_id}
+              postId={_id}
+              postUserId={postAuthor?._id}
+              name={`${postAuthor?.firstName} ${postAuthor?.lastName}`}
+              description={description}
+              location={postAuthor.location}
+              postImage={postImage?.url}
+              userProfilepic={postAuthor?.profilePic?.url}
+              likes={likes}
+              comments={comments}
+            />
+          );
         }
-        );
-        const posts = await response.json()
-        dispatch(setPosts({ posts }));
-    };
+      )}
+    </>
+  );
+};
 
-    useEffect(() => {
-        if (isProfile) {
-            getUserPosts() 
-        } else {
-            getPosts()
-        } // eslint-disable-next-line
-    }, [])
-
-    return (
-        <>
-            {posts.map(
-                ({
-                    _id,
-                    userId,
-                    firstName,
-                    lastName,
-                    description,
-                    location,
-                    picturePath,
-                    userPicturePath,
-                    likes,
-                    comments
-                }) => (
-                    <PostWidget
-                        key={_id}
-                        postId={_id}
-                        postUserId={userId}
-                        name={`${firstName} ${lastName}`}
-                        description={description}
-                        location={location}
-                        picturePat={picturePath}
-                        userPicturePath={userPicturePath}
-                        likes={likes}
-                        comments={comments}
-                    />
-                )
-            )}
-        </>
-    )
-}
-
-export default PostsWidget
+export default PostsWidget;
