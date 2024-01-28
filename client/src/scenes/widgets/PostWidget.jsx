@@ -66,9 +66,6 @@ const PostWidget = ({
   const addComment = async (e) => {
     e.preventDefault();
     try {
-      if (comment === "") {
-        throw "comment can't be empty";
-      }
       const response = await fetch(
         `${process.env.REACT_APP_API_URL}/posts/${postId}/comment`,
         {
