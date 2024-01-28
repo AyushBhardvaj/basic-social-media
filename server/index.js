@@ -31,7 +31,7 @@ app.use(cookieParser());
 // app.use(bodyParser.json({ limit: "30mb", extended: true }));
 // app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(
-  cors({  
+  cors({
     origin: process.env.COOKIES_ORIGIN,
     credentials: true,
   })
@@ -39,6 +39,9 @@ app.use(
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 mongoose.set("strictQuery", true);
 
+app.get("/", (req, res) => {
+  res.send("Backend deployed");
+});
 /* File Storage */
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
