@@ -59,7 +59,7 @@ const Form = () => {
   const login = async (values, onSubmitProps) => {
     try {
       const savedUserResponse = await fetch(
-        "http://localhost:3001/auth/login",
+        `${process.env.REACT_APP_API_URL}/auth/login`,
         {
           method: "POST",
           headers: {
