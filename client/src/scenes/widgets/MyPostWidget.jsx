@@ -47,7 +47,7 @@ const MyPostWidget = ({ picturePath }) => {
         formData.append("pictureUrl", imgUrl); //Key "picture" should match with keey given in post route of server index.js file "
         formData.append("picturePath", image.name);
       }
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/posts`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}posts`, {
         method: "POST",
         credentials: "include",
         body: formData,

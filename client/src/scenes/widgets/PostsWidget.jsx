@@ -9,7 +9,7 @@ const PostsWidget = ({ userId, isProfile = false }) => {
   const dispatch = useDispatch();
 
   const getPosts = async () => {
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/posts`, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}posts`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,

@@ -12,7 +12,7 @@ const FriendListWidget = () => {
 
   const getFriends = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/friends`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}friends`, {
         method: "GET",
         credentials: "include",
       });

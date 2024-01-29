@@ -46,7 +46,7 @@ const PostWidget = ({
   const patchLike = async () => {
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/posts/${postId}/like`,
+        `${process.env.REACT_APP_API_URL}posts/${postId}/like`,
         {
           method: "PATCH",
           headers: {

@@ -16,7 +16,7 @@ const ProfilePage = () => {
   const getUser = async () => {
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/user/${userId}`,
+        `${process.env.REACT_APP_API_URL}user/${userId}`,
         {
           method: "GET",
           credentials: "include",

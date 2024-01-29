@@ -51,7 +51,7 @@ const Header = () => {
 
   const searchUsers = async () => {
     const searchResponse = await fetch(
-      `${process.env.REACT_APP_API_URL}/user/search?${params}`,
+      `${process.env.REACT_APP_API_URL}user/search?${params}`,
       {
         method: "GET",
         credentials: "include",

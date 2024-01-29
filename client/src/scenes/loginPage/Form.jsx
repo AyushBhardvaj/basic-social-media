@@ -59,9 +59,9 @@ const Form = () => {
   const login = async (values, onSubmitProps) => {
     try {
       console.log(values);
-      console.log(`${process.env.REACT_APP_API_URL}/auth/login`);
+      console.log(`${process.env.REACT_APP_API_URL}auth/login`);
       const savedUserResponse = await fetch(
-        `${process.env.REACT_APP_API_URL}/auth/login`,
+        `${process.env.REACT_APP_API_URL}auth/login`,
         {
           method: "POST",
           headers: {
@@ -98,7 +98,7 @@ const Form = () => {
       const imgUrl = await ImagetoBase64(values.picture);
       formData.append("pictureUrl", imgUrl);
       const savedUserResponse = await fetch(
-        `${process.env.REACT_APP_API_URL}/auth/register`,
+        `${process.env.REACT_APP_API_URL}auth/register`,
         {
           method: "POST",
           credentials: "include",
