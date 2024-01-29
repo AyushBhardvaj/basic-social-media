@@ -31,7 +31,7 @@ app.use(
   cors({
     origin: process.env.COOKIES_ORIGIN,
     credentials: true,
-    exposedHeaders: ["set-cookie"] 
+    exposedHeaders: ["Set-Cookie"] 
   })
 );
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
